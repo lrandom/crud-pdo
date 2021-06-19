@@ -2,11 +2,11 @@
 
 interface ICrudDAL
 {
-    function get ();
-
     function add ($payload);
 
-    function edit ($payload);
+    function get ($page);
+
+    function edit ($id, $payload);
 
     function delete ($id);
 }

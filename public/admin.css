@@ -1,0 +1,40 @@
+* ul, li {
+    margin: 0px;
+    padding: 0px;
+}
+
+.container {
+    width: 90%;
+    margin: 0px auto;
+}
+
+.container nav {
+    height: 50px;
+    background: #CDCDCD;
+    display: flex;
+    align-items: center;
+    justify-items: center;
+    padding: 10px;
+    box-sizing: content-box;
+}
+
+.main-section table {
+    width: 100%;
+
+}
+
+.pagination li {
+    float: left;
+    list-style: none;
+}
+
+.pagination li a {
+    padding: 10px;
+    border: 1px solid #1f1f1f;
+    text-decoration: none;
+}
+
+.pagination li a.active {
+    color: white;
+    background: black;
+}

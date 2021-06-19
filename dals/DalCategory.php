@@ -1,15 +1,27 @@
 <?php
 require_once 'Connect.php';
 require_once 'ICrudDAL.php';
+$baseName = __DIR__;
+$baseName = str_replace('dals', '', $baseName);
+require_once $baseName.'services/helper.php';
 
 class DalCategory extends Connect implements ICrudDAL
 {
     const tableName = 'category';
+    const displayPerPage = 6; //mỗi trang show ra 6 bản ghi
 
-    function get ()
+    function getTotalRows ()
+    {
+        $rs = $this->pdo->query('SELECT COUNT(*) as total FROM '.self::tableName);
+        $count = $rs->fetch(PDO::FETCH_ASSOC);
+        return $count['total'];
+    }
+
+    function get ($page)
     {
         // TODO: Implement get() method.
-        return $this->pdo->query('SELECT * FROM '.self::tableName);
+        $offset = getOffsetInRS($page, self::displayPerPage);
+        return $this->pdo->query('SELECT * FROM '.self::tableName.' LIMIT '.$offset.','.self::displayPerPage);
     }
 
     function add ($payload)
@@ -26,11 +38,11 @@ class DalCategory extends Connect implements ICrudDAL
         }
     }
 
-    function edit ($payload)
+    function edit ($id, $payload)
     {
         // TODO: Implement edit() method.
         try {
-            $stm = $this->getStatement('UPDATE '.self::tableName.' SET name=:name');
+            $stm = $this->getStatement('UPDATE '.self::tableName.' SET name=:name WHERE id='.$id);
             $stm->bindParam(':name', $name);
             $name = $payload['name'];
             $stm->execute();
@@ -51,6 +63,11 @@ class DalCategory extends Connect implements ICrudDAL
         }
     }
 
+    function getOne ($id)
+    {
+        $rs = $this->pdo->query('SELECT * FROM '.self::tableName.' WHERE id='.$id);
+        return $rs->fetch(PDO::FETCH_ASSOC);
+    }
 }
 
 ?>

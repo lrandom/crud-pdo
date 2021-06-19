@@ -1,17 +1,20 @@
 <?php
 require_once './../../dals/DalCategory.php';
 $dalCategory = new DalCategory();
+$id = $_GET['id'];
+
 if (isset($_POST['name'])) {
     $payload = $_POST;
-    if ($dalCategory->add($payload) > 0) {
+    if ($dalCategory->edit($id, $payload)) {
         //thông báo thành công;
-        $noti = "Thêm thành công";
+        $noti = "Edit thành công";
     } else {
         //thông báo thất bại
-        $noti = "Thêm thất bại";
+        $noti = "Edit thất bại";
     }
 }
 
+$obj = $dalCategory->getOne($id);
 ?>
 <!doctype html>
 <html lang="en">
@@ -23,7 +26,7 @@ if (isset($_POST['name'])) {
     <section class="main-section">
 
         <form method="post">
-            <input type="name" name="name"/>
+            <input type="name" name="name" value="<?php echo $obj['name']; ?>"/>
             <button>Submit</button>
         </form>
     </section>

@@ -1,30 +1,37 @@
 <?php
 require_once './../../dals/DalCategory.php';
 $dalCategory = new DalCategory();
-$categoryList = $dalCategory->get();
-''
+
+if (isset($_GET['action'])) {
+    switch ($_GET['action']) {
+        case 'update':
+            header('location:update.php?id='.$_GET['id']);
+            break;
+
+
+        case 'delete':
+            $id = $_GET['id'];
+            $dalCategory->delete($id);
+            break;
+    }
+}
+
+$page = isset($_GET['page']) ? $_GET['page'] : 1;
+$categoryList = $dalCategory->get($page);
+
+//tính ra tổng số trang
+$totalPage = ceil($dalCategory->getTotalRows()/DalCategory::displayPerPage);
+
+
 ?>
 <!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-    <link rel="stylesheet" href="./../../public/admin.css">
-
-</head>
+<?php require_once './../commons/head.php'; ?>
 <body>
 <div class="container">
-    <nav>
-        <div><a>PDO CMS</a></div>
-        <div><a>Category</a></div>
-        <div><a>Product</a></div>
-        <div><a>User</a></div>
-    </nav>
+    <?php require_once './../commons/nav.php'; ?>
 
-    <section>
+    <section class="main-section">
         <table>
             <tr>
                 <td>Id</td>
@@ -39,8 +46,9 @@ $categoryList = $dalCategory->get();
                     <td><?php echo $categoryItem['id']; ?></td>
                     <td><?php echo $categoryItem['name']; ?></td>
                     <td>
-                        <a>Delete</a>
-                        <a>Update</a>
+                        <a onclick="return confirm('Bạn chắc chắn muốn xoá ?')"
+                           href="?action=delete&id=<?php echo $categoryItem['id']; ?>">Delete</a>
+                        <a href="?action=update&id=<?php echo $categoryItem['id']; ?>">Update</a>
                     </td>
                 </tr>
                 <?php
@@ -48,12 +56,27 @@ $categoryList = $dalCategory->get();
             ?>
 
         </table>
+
+        <br>
+        <br>
+        <ul class="pagination">
+            <?php for ($i = 1;
+                       $i <= $totalPage;
+                       $i++) {
+                ?>
+                <li><a <?php if ($i == $page) {
+                        echo 'class="active"';
+                    } ?> href="?page=<?php echo $i; ?>"><?php echo $i ?></a></li>
+                <?php
+            } ?>
+        </ul>
+
     </section>
 
+    <br>
+    <div style="clear:both"></div>
 
-    <footer>
-        2021 @Luan
-    </footer>
+    <?php require_once './../commons/footer.php'; ?>
 </div>
 </body>
 </html>
